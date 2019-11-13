@@ -1,6 +1,7 @@
 package JSlider.Example.sliderwithbutton;
 
 import java.awt.Button;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -11,6 +12,7 @@ import java.awt.Label;
 import java.awt.Panel;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -18,6 +20,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 public class CustomSlider extends Component {
 	private int frameWidth = 800;
@@ -95,15 +98,33 @@ public class CustomSlider extends Component {
 		labelCount.setBounds(panelStart_X_Index-20, panelStart_Y_Index, 20, panelHeight);
 		frame.add(labelCount);
 		
+		TextArea textArea = new TextArea();
+		textArea.setBounds(rightButton.getX()+ rightButton.getWidth(), rightButton.getY(), 150, 150);
+		//textArea.Scrol
+		frame.add(textArea);
+		
 		panel = new Panel();
 		panel.setBounds(panelStart_X_Index, panelStart_Y_Index+100, panelWidth/2, panelHeight*2);
 		panel.setLayout(null);
-		frame.add(panel);
+		//panel.setBackground(Color.GRAY);
+		Panel panel2 = new Panel();
+		panel2.setBounds(panelStart_X_Index, panelStart_Y_Index+150, panelWidth/2, panelHeight*2);
+		//panel2.setBackground(Color.GRAY);
+		panel2.setLayout(null);
 		
 		label = new Label(createString());
-		label.setBounds(panelStart_X_Index, panelStart_Y_Index+100, panelWidth, panelHeight*2);
+		label.setBounds(panelStart_X_Index, panelStart_Y_Index+100, panelWidth, panelHeight);
+		label.setBackground(Color.YELLOW);
 		panel.add(label);
 		
+		JPanel container = new JPanel();
+		container.add(panel);
+		//container.add(panel2);
+		JScrollPane jsp = new JScrollPane(container);
+		frame.add(jsp);
+		
+		
+		//frame.add(panel);		
 		//frame.add(panelSlider);
 	}
 
@@ -121,6 +142,7 @@ public class CustomSlider extends Component {
 					midButton.setLocation(leftButton.getX() + leftButton.getWidth() , locationY);
 				}
 				updateLabelCount();
+				moveLabel(label,true);
 				
 			}
 
@@ -138,6 +160,7 @@ public class CustomSlider extends Component {
 					midButton.setLocation(rightButton.getX()-midButton.getWidth() , locationY);
 				}
 				updateLabelCount();
+				moveLabel(label,false);
 			}
 		};
         this.actionListenerMid = new ActionListener() {
@@ -205,8 +228,14 @@ public class CustomSlider extends Component {
 		}
 		return str;
 	}
-	private void moveLabel(Label label) {
-		label.setBounds(label.getX()-movingPart, label.getY(), label.getWidth(), label.getHeight());
+	private void moveLabel(Label label, boolean direction/*true= left, false = right*/) {
+		if (direction) {
+			label.setBounds(label.getX()-movingPart, label.getY(), label.getWidth(), label.getHeight());			
+		}
+		else {
+			label.setBounds(label.getX()+movingPart, label.getY(), label.getWidth(), label.getHeight());
+			
+		}
 	}
 	public int getSliderSize() {
 		return sliderSize;
