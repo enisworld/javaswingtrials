@@ -1,4 +1,4 @@
-package javaswingtrials;
+package JSlider.Example.sliderwithbutton;
 
 public class Demo {
 

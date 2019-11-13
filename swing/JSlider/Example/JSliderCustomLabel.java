@@ -1,3 +1,7 @@
+package JSlider.Example;
+
+
+
 //Bu kod aşağıdaki linkten alınmıştır. Örnek olması açısından buraya eklenmiştir.
 // https://kodejava.org/how-do-i-create-a-jslider-with-custom-labels/
 

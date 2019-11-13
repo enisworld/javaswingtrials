@@ -1,4 +1,4 @@
-package sliderwithbutton;
+package JSlider.Example.sliderwithbutton;
 
 import java.awt.Button;
 import java.awt.Component;
