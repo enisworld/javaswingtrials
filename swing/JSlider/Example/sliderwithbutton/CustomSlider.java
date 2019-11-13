@@ -26,6 +26,13 @@ public class CustomSlider extends Component {
 	private int panelHeight = 20;
 	private int panelStart_X_Index = 150;
 	private int panelStart_Y_Index= 50;
+	//sliderSize degiskeni sliderdaki eleman sayisini ifade eder.
+	private int sliderSize = 10;
+	//sliderWidth slider'in genisligini ifade eder. burada panelin geniþliðgi ile ayni kabul edilmektedir.
+	private int sliderWidth = 300;
+	//moveValue herbir adimda ne kadarlýk bir degisim olacagini ifade eder. Burada yatayda bir degisiklik oldugundan x koordinatinda degisim yapilmatadir.
+	int movingPart;
+	private int selectedValueIndex = 0;
 	Frame frame;
 	Panel panel;
 	Button leftButton;
@@ -36,24 +43,17 @@ public class CustomSlider extends Component {
     ActionListener actionListenerMid;
 	MouseMotionListener mouseMotionListener;
 	Label label;
-	int moveValue = 3;
+	Label labelCount;
 	//int dragEnd = 0;
 
 	
-	public CustomSlider() {
+	public CustomSlider(int sliderSize) {
+		this.sliderSize = sliderSize;
 		initializeComponent();
-		
+		movingSize();
 		//enableInputMethods(true);   
 		//addMouseListener(this);
 		//repaint();
-	}
-	@Override
-	public void paint(Graphics g) {
-		// TODO Auto-generated method stub
-		super.paint(g);
-		
-		g.drawLine(panelStart_X_Index,panelStart_Y_Index+panelHeight, panelStart_X_Index+panelWidth, panelHeight);
-		//g.drawLine(panelStart_X_Index,panelStart_Y_Index+panelHeight+25, panelWidth, panelHeight);
 	}
 
 	private void initializeComponent() {
@@ -91,6 +91,10 @@ public class CustomSlider extends Component {
 		midButton.addMouseMotionListener(mouseMotionListener);
 		//panelSlider.add(midButton );
 		frame.add(midButton);
+		labelCount = new Label("0");
+		labelCount.setBounds(panelStart_X_Index-20, panelStart_Y_Index, 20, panelHeight);
+		frame.add(labelCount);
+		
 		panel = new Panel();
 		panel.setBounds(panelStart_X_Index, panelStart_Y_Index+100, panelWidth/2, panelHeight*2);
 		panel.setLayout(null);
@@ -108,15 +112,15 @@ public class CustomSlider extends Component {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				int locationX  = midButton.getX()-moveValue ;
-//				int locationY  = leftButton.getY();
-//				if ((leftButton.getX() + leftButton.getWidth()) < locationX) {
-//					midButton.setLocation(locationX , locationY);
-//				}
-//				else {
-//					midButton.setLocation(leftButton.getX() + leftButton.getWidth() , locationY);
-//				}
-				moveLabel(label);
+				int locationX  = midButton.getX()-movingPart ;
+				int locationY  = leftButton.getY();
+				if ((leftButton.getX() + leftButton.getWidth()) < locationX) {
+					midButton.setLocation(locationX , locationY);
+				}
+				else {
+					midButton.setLocation(leftButton.getX() + leftButton.getWidth() , locationY);
+				}
+				updateLabelCount();
 				
 			}
 
@@ -125,14 +129,15 @@ public class CustomSlider extends Component {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int locationX  = midButton.getX()+moveValue ;
+				int locationX  = midButton.getX()+movingPart ;
 				int locationY  = midButton.getY();
-				if (rightButton.getX() > midButton.getX()+midButton.getWidth()) {
+				if (rightButton.getX() > locationX + midButton.getWidth()) {
 					midButton.setLocation(locationX , locationY);
 				}	
 				else {
 					midButton.setLocation(rightButton.getX()-midButton.getWidth() , locationY);
 				}
+				updateLabelCount();
 			}
 		};
         this.actionListenerMid = new ActionListener() {
@@ -177,8 +182,10 @@ public class CustomSlider extends Component {
 		};
 	}
 	
-	private int movingSize(ActionEvent e) {
-		return 0;
+	private int movingSize() {
+		// Bu metot ile sliderdaki her bir adimin ne kadar mesafede yapilacagini hesaplar.
+		movingPart = (this.sliderWidth-this.leftButton.getWidth()*2)/this.sliderSize;
+		return  movingPart;
 	}
 	
 	private void editFrameWidthHeight() {
@@ -199,7 +206,25 @@ public class CustomSlider extends Component {
 		return str;
 	}
 	private void moveLabel(Label label) {
-		label.setBounds(label.getX()-moveValue, label.getY(), label.getWidth(), label.getHeight());
+		label.setBounds(label.getX()-movingPart, label.getY(), label.getWidth(), label.getHeight());
+	}
+	public int getSliderSize() {
+		return sliderSize;
+	}
+	public void setSliderSize(int sliderSize) {
+		this.sliderSize = sliderSize;
+	}
+
+	public int getSelectedValueIndex() {
+		this.selectedValueIndex = (midButton.getX()-leftButton.getX()-leftButton.getWidth())/movingSize();
+		return this.selectedValueIndex;
+	}
+
+	public void setSelectedValueIndex(int selectedValueIndex) {
+		this.selectedValueIndex = selectedValueIndex;
+	}
+	private void updateLabelCount() {
+		this.labelCount.setText(Integer.toString(getSelectedValueIndex()));
 	}
 	
 }
