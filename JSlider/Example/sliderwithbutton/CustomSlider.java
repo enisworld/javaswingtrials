@@ -19,7 +19,7 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
 
-public class Slider extends Component {
+public class CustomSlider extends Component {
 	private int frameWidth = 800;
 	private int frameHeight = 400;
 	private int panelWidth = 300;
@@ -40,7 +40,7 @@ public class Slider extends Component {
 	//int dragEnd = 0;
 
 	
-	public Slider() {
+	public CustomSlider() {
 		initializeComponent();
 		
 		//enableInputMethods(true);   
