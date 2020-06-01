@@ -1,0 +1,119 @@
+package java2dworks;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.geom.Rectangle2D;
+
+import javax.swing.JPanel;
+
+public class DragPanel extends JPanel implements MouseListener, MouseMotionListener
+{
+Graphics2D g2;
+Rectangle2D square;
+Color colour;
+
+double x1, y1, x2, y2, size;
+double offsetX, offsetY;
+
+boolean dragging = false;
+public DragPanel()
+{
+
+x1 = 10.0;
+y1 = 10.0;
+size = 40.0;
+x2 = x1 + size;
+y2 = y1 + size;
+
+square = new Rectangle2D.Double(x1, y1, size, size);
+colour = Color.BLUE;
+
+setFocusable(true);
+addMouseListener(this);
+addMouseMotionListener(this);
+this.requestFocus();
+
+}
+
+public void paintComponent(Graphics g)
+{
+
+super.paintComponent(g);
+g2 = (Graphics2D) g;
+g2.draw(square);
+g2.setColor(colour);
+g2.draw(square);
+
+}
+
+@Override
+public void mouseDragged(MouseEvent ev) 
+{
+    if (dragging)
+    {
+    double mx = ev.getX();
+    double my = ev.getY();
+
+    /*x1 = mx - offsetX;
+    y1 = mx - offsetY;
+    */
+    x1 = mx - offsetX;
+    y1 = my - offsetY;
+    x2 = x1 + size;
+    y2 = y1 + size;
+    square = new Rectangle2D.Double(x1, y1, size, size);
+    repaint();  
+    }
+
+}
+
+@Override
+public void mousePressed(MouseEvent ev) 
+{
+double mx = ev.getX();
+double my = ev.getY();
+
+if (mx > x1 && mx < x2 && my > y1 && my < y2)
+{
+    dragging = true;
+    offsetX  = mx - x1;
+    offsetY = my - y1;
+}
+
+}
+
+@Override
+public void mouseReleased(MouseEvent arg0) 
+{
+dragging = false;
+}
+
+@Override
+public void mouseMoved(MouseEvent arg0) {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public void mouseClicked(MouseEvent arg0) {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public void mouseEntered(MouseEvent arg0) {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public void mouseExited(MouseEvent arg0) {
+	// TODO Auto-generated method stub
+	
+}
+
+}
