@@ -1,0 +1,212 @@
+package testcodes;
+
+import java.awt.Point;
+
+import javafx.application.Application;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.stage.Stage;
+
+public class MoveRotate extends Application{
+	double orgSceneX, orgSceneY;
+	Circle circle1,circle2;
+	Rectangle rect; 
+	double prevAngle = 0; 
+	public static void main(String[] args) {
+		launch(args);
+	}
+
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		BorderPane root = new BorderPane();
+		
+		circle1 = new Circle(50, 50, 25);
+		circle2 = new Circle(250, 250, 25);
+		
+		Line line1 = connect(circle1, circle2);
+		rect = new Rectangle(300,300, 50,25);
+		
+		Stop[] stop6 = new Stop[]{new Stop(0, Color.RED),
+		        new Stop(0.25, Color.GREEN),
+		        new Stop(0.50, Color.BLUE),
+		        new Stop(0.75, Color.ORANGE),
+		        new Stop(1, Color.YELLOW)};
+		 
+		LinearGradient gradient6 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stop6);
+		
+		rect.setFill(gradient6);
+		
+		circle1.setOnMousePressed(mousePressedEventHandler);
+		circle1.setOnMouseDragged(mouseDraggedEventHandler);
+		circle2.setOnMousePressed(mousePressedEventHandler2);
+		circle2.setOnMouseDragged(mouseDraggedEventHandler2);
+		root.getChildren().addAll(circle1, circle2, line1, rect);
+		
+		Scene scene = new Scene(root);
+		primaryStage.setScene(scene);
+		primaryStage.show();
+	}
+	
+	private Line connect(Circle c1, Circle c2)
+	{
+		Line line = new Line();
+		 
+		line.startXProperty().bind(c1.centerXProperty());
+		line.startYProperty().bind(c1.centerYProperty());
+		 
+		line.endXProperty().bind(c2.centerXProperty());
+		line.endYProperty().bind(c2.centerYProperty());
+		 
+		line.setStrokeWidth(1);
+		line.setStrokeLineCap(StrokeLineCap.BUTT);
+		line.getStrokeDashArray().setAll(1.0, 4.0);
+	 
+	return line;
+	}
+	
+	private EventHandler<MouseEvent> mousePressedEventHandler = (t) ->
+	{
+		orgSceneX = t.getSceneX();
+		orgSceneY = t.getSceneY();
+		 
+		// bring the clicked circle to the front
+		 
+		/*Circle c = (Circle) (t.getSource());
+		c.toFront();*/
+	};
+	private EventHandler<MouseEvent> mouseDraggedEventHandler = (t) ->
+	{
+		double offsetX = t.getSceneX() - orgSceneX;
+		double offsetY = t.getSceneY() - orgSceneY;
+		 
+		Circle c = (Circle) (t.getSource());
+		 
+		c.setCenterX(c.getCenterX() + offsetX);
+		c.setCenterY(c.getCenterY() + offsetY);
+		
+		circle2.setCenterX(circle2.getCenterX() + offsetX);
+		circle2.setCenterY(circle2.getCenterY() + offsetY);
+		
+		orgSceneX = t.getSceneX();
+		orgSceneY = t.getSceneY();
+	};
+	
+	private EventHandler<MouseEvent> mousePressedEventHandler2 = (t) ->
+	{
+		orgSceneX = t.getSceneX();
+		orgSceneY = t.getSceneY();
+		 
+		// bring the clicked circle to the front
+		 
+		/*Circle c = (Circle) (t.getSource());
+		c.toFront();*/
+	};
+	private EventHandler<MouseEvent> mouseDraggedEventHandler2 = (t) ->
+	{
+		double offsetX = t.getSceneX() - orgSceneX;
+		double offsetY = t.getSceneY() - orgSceneY;
+		 
+		Circle c = (Circle) (t.getSource());
+		
+		c.setCenterX(c.getCenterX() + offsetX);
+		c.setCenterY(c.getCenterY() + offsetY);
+		
+		/*double originAngle = calcRotationAngleInDegrees(orgSceneY-circle1.getCenterY(), orgSceneX-circle1.getCenterX()); 
+		
+		
+		double newangle = calcRotationAngleInDegrees(t.getSceneY()-circle1.getCenterY(), t.getSceneX()-circle1.getCenterX());
+		double angle = Math.abs((newangle-originAngle)/(1+newangle*originAngle));
+		
+		
+		x1 -= x2; 
+		y1 -= y2;
+		x3 -= x2;
+		y3 -= y2;
+
+		double angle1 = atan2(y1, x1);
+		double angle2 = atan2(y3, x3);
+
+		if( originAngle < 0.0 ) originAngle += 2*Math.PI;
+		if( newangle < 0.0 ) newangle += 2*Math.PI;*/
+		
+		
+		double value = calculateAngleCosinusFormula(circle1.getCenterX(), circle1.getCenterY(), orgSceneX, orgSceneY, t.getSceneX(), t.getSceneY());
+		//System.out.println("angle = " + value);
+		//rect.setRotate((originAngle-newangle)*180/2*Math.PI);
+		rect.setRotate(Math.toDegrees(value));
+		//prevAngle += angle;
+		
+		orgSceneX = t.getSceneX();
+		orgSceneY = t.getSceneY();
+	};
+	
+	private double calculateAngleCosinusFormula(double x1,double y1,double x2,double y2,double x3,double y3) {
+		
+		//center : x1, y1;
+		//press point : x2, y2;
+		//lastp point : x3, y3;
+		
+		double cosQ = 0;
+		try {
+			double l1 = Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));//p-c
+			
+			double l2 = Math.sqrt((x3-x1)*(x3-x1) + (y3-y1)*(y3-y1));//l-c
+			
+			double l3 = Math.sqrt((x2-x3)*(x2-x3) + (y2-y3)*(y2-y3));//p-l
+			
+			cosQ = (l1*l1 + l2*l2 - l3*l3)/(2*l1*l2);
+			System.out.println(cosQ);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("error occured");
+		}
+
+		double val = Math.acos(cosQ);
+		
+		return val;
+	}
+	
+	
+	public static double calcRotationAngleInDegrees(double x, double y)
+	{
+	    // calculate the angle theta from the deltaY and deltaX values
+	    // (atan2 returns radians values from [-PI,PI])
+	    // 0 currently points EAST.  
+	    // NOTE: By preserving Y and X param order to atan2,  we are expecting 
+	    // a CLOCKWISE angle direction.  
+	    double theta = Math.atan2(y, x);
+
+	    // rotate the theta angle clockwise by 90 degrees 
+	    // (this makes 0 point NORTH)
+	    // NOTE: adding to an angle rotates it clockwise.  
+	    // subtracting would rotate it counter-clockwise
+	    theta += Math.PI/2.0;
+
+	    // convert from radians to degrees
+	    // this will give you an angle from [0->270],[-180,0]
+	    double angle = Math.toDegrees(theta);
+
+	    // convert to positive range [0-360)
+	    // since we want to prevent negative angles, adjust them now.
+	    // we can assume that atan2 will not return a negative value
+	    // greater than one partial rotation
+	   /* if (angle < 0) {
+	        angle += 360;
+	    }*/
+
+	    return theta;
+	}
+	
+	
+}
