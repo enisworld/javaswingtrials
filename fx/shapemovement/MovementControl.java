@@ -21,7 +21,8 @@ public class MovementControl extends Group{
     									, newY);
     	Rotate rotate = new Rotate(); 
         
-        //Setting the angle for the rotation 
+        //Setting the angle for the rotation
+    	angle = boundary.getRotate() + angle;
         rotate.setAngle(angle); 
         
         //Setting pivot points for the rotation 
@@ -146,7 +147,7 @@ public class MovementControl extends Group{
 	
     private void attachBoundingRectangle(Node node) {
         Bounds bounds = node.getBoundsInParent();
-        System.out.println("Rotate angle : " + node.getRotate());
+        System.out.println("Rotate angle : " + targetNode.getRotate());
         double nodeStartX = 0, nodeStartY = 0, nodeWidth = 0, nodeHeight = 0, centerXNode = 0, centerYNode = 0;;
         if (node instanceof Rectangle) {
         	Rectangle rectangle = (Rectangle) targetNode;

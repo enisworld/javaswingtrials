@@ -12,6 +12,7 @@ public class Util {
     		node.setOnMousePressed(mouseEvent -> {	
     			rotateStartX = mouseEvent.getSceneX();
     			rotateStartY = mouseEvent.getSceneY();
+    			rotateHandler.handle(rotateStartX, rotateStartY, rotateStartX, rotateStartY, false);
     		});
     		
     		node.setOnMouseReleased(mouseEvent -> {
@@ -26,7 +27,8 @@ public class Util {
     			rotateEndY = mouseEvent.getSceneY();
     			
     			rotateHandler.handle(rotateStartX, rotateStartY, rotateEndX, rotateEndY, false);
-    			
+    			rotateStartX = rotateEndX;
+    			rotateStartY = rotateEndY;
     		});
     		
     		 node.setOnMouseExited(mouseEvent -> {
