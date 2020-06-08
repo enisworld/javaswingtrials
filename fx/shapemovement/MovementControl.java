@@ -3,39 +3,39 @@ package shapemovement;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 
 public class MovementControl extends Group{
 	private Node targetNode = null;
+	private VBox tableviewParent;
     private final Rectangle boundary = new Rectangle();
-	
-    private Anchor rotateAnchor = new Anchor(Color.BLACK, false, false, null, (oldX, oldY, newX, newY, isReleased) -> {
-    	double angle = getDirectionAtan2(boundary.getX() + boundary.getWidth()/2
-    									, boundary.getY() + boundary.getHeight()/2
+	//private double angle = 0;
+    private Anchor rotateAnchor = new Anchor(Color.AQUA, false, false, null, (oldX, oldY, newX, newY, isReleased) -> {
+    	double topHeightDiff =  ((BorderPane)boundary.getParent().getParent().getParent().getParent().getParent()).getTop().getBoundsInParent().getHeight();
+    	//System.out.println("Height : " + ((HBox)((BorderPane)boundary.getParent().getParent().getParent().getParent()).getTop()).getHeight());
+    	/*System.out.println("==============================");*/
+    	double angle = boundary.getRotate();
+    	//boundary.setRotate(0);
+    	angle += getDirectionAtan2( ((Pane)boundary.getParent().getParent()).getBoundsInParent().getMinX() + boundary.getX() + boundary.getWidth()/2
+    									, topHeightDiff + ((Pane)boundary.getParent().getParent()).getBoundsInParent().getMinY()+ boundary.getY() + boundary.getHeight()/2
     									, oldX
     									, oldY
     									, newX
     									, newY);
-    	Rotate rotate = new Rotate(); 
-        
-        //Setting the angle for the rotation
-    	angle = boundary.getRotate() + angle;
-        rotate.setAngle(angle); 
-        
-        //Setting pivot points for the rotation 
-        rotate.setPivotX(boundary.getX() + boundary.getWidth()/2); 
-        rotate.setPivotY(boundary.getY() + boundary.getHeight()/2); 
-        //Adding the transformation to boundary 
         boundary.setRotate(angle); 
-
         updateAnchorPositions();
     	rotateTargetNode(angle);
 
     });
-    private Anchor topLeft = new Anchor(Color.GOLD, true, true, (oldX, oldY, newX, newY) -> {
+    private Anchor topLeft = new Anchor(Color.GHOSTWHITE, true, true, (oldX, oldY, newX, newY) -> {
         double newWidth = boundary.getWidth() - (newX - oldX);
         if (newWidth > 0) {
             boundary.setX(newX);
@@ -50,7 +50,7 @@ public class MovementControl extends Group{
         updateAnchorPositions();
         resizeTargetNode();
     }, null);
-    private Anchor topCenter = new Anchor(Color.GOLD, false, true, (oldX, oldY, newX, newY) -> {
+    private Anchor topCenter = new Anchor(Color.GHOSTWHITE, false, true, (oldX, oldY, newX, newY) -> {
         double newHeight = boundary.getHeight() - (newY - oldY);
         if (newHeight > 0) {
             boundary.setY(newY);
@@ -60,7 +60,7 @@ public class MovementControl extends Group{
         updateAnchorPositions();
         resizeTargetNode();
     }, null);
-    private Anchor topRight = new Anchor(Color.GOLD, true, true, (oldX, oldY, newX, newY) -> {
+    private Anchor topRight = new Anchor(Color.GHOSTWHITE, true, true, (oldX, oldY, newX, newY) -> {
         
     	double newWidth = boundary.getWidth() + (newX - oldX);
         if (newWidth > 0) {
@@ -74,7 +74,7 @@ public class MovementControl extends Group{
         updateAnchorPositions();
         resizeTargetNode();
     }, null);
-    private Anchor rightCenter = new Anchor(Color.GOLD, true, false, (oldX, oldY, newX, newY) -> {
+    private Anchor rightCenter = new Anchor(Color.GHOSTWHITE, true, false, (oldX, oldY, newX, newY) -> {
         double newWidth = boundary.getWidth() + (newX - oldX);
         if (newWidth > 0) {
             boundary.setWidth(newWidth);
@@ -83,7 +83,7 @@ public class MovementControl extends Group{
         updateAnchorPositions();
         resizeTargetNode();
     }, null);
-    private Anchor bottomRight = new Anchor(Color.GOLD, true, true, (oldX, oldY, newX, newY) -> {
+    private Anchor bottomRight = new Anchor(Color.GHOSTWHITE, true, true, (oldX, oldY, newX, newY) -> {
         double newWidth = boundary.getWidth() + (newX - oldX);
         if (newWidth > 0) {
             boundary.setWidth(newWidth);
@@ -96,7 +96,7 @@ public class MovementControl extends Group{
         updateAnchorPositions();
         resizeTargetNode();
     }, null);
-    private Anchor bottomCenter = new Anchor(Color.GOLD, false, true, (oldX, oldY, newX, newY) -> {
+    private Anchor bottomCenter = new Anchor(Color.GHOSTWHITE, false, true, (oldX, oldY, newX, newY) -> {
         double newHeight = boundary.getHeight() + (newY - oldY);
         if (newHeight > 0) {
             boundary.setHeight(newHeight);
@@ -105,7 +105,7 @@ public class MovementControl extends Group{
         updateAnchorPositions();
         resizeTargetNode();
     }, null);
-    private Anchor bottomLeft = new Anchor(Color.GOLD, true, true, (oldX, oldY, newX, newY) -> {
+    private Anchor bottomLeft = new Anchor(Color.GHOSTWHITE, true, true, (oldX, oldY, newX, newY) -> {
         double newWidth = boundary.getWidth() - (newX - oldX);
         if (newWidth > 0) {
             boundary.setX(newX);
@@ -119,7 +119,7 @@ public class MovementControl extends Group{
         updateAnchorPositions();
         resizeTargetNode();
     }, null);
-    private Anchor leftCenter = new Anchor(Color.GOLD, true, false, (oldX, oldY, newX, newY) -> {
+    private Anchor leftCenter = new Anchor(Color.GHOSTWHITE, true, false, (oldX, oldY, newX, newY) -> {
         double newWidth = boundary.getWidth() - (newX - oldX);
         if (newWidth > 0) {
             boundary.setX(newX);
@@ -130,9 +130,9 @@ public class MovementControl extends Group{
         resizeTargetNode();
     }, null);
     
-	public MovementControl(Node targetNode) {
+	public MovementControl(Node targetNode, VBox vBox) {
         this.targetNode = targetNode;
-
+        tableviewParent = vBox;
         attachBoundingRectangle(targetNode);
         attachAnchors();
 
@@ -169,31 +169,29 @@ public class MovementControl extends Group{
         	centerXNode = ellipse.getCenterX();
         	centerYNode = ellipse.getCenterY();
 		}
+        else if (node instanceof Line) {
+			Line line = (Line) targetNode;
+			bounds = node.getBoundsInParent();
+			nodeStartX = bounds.getMinX();
+         	nodeStartY = bounds.getMinY();
+         	nodeWidth = bounds.getWidth();
+         	nodeHeight = bounds.getHeight();
+		}
         
         boundary.setStyle(
-                "-fx-stroke: forestgreen; " +
+                "-fx-stroke: black; " +
                 "-fx-stroke-width: 2px; " +
                 "-fx-stroke-dash-array: 12 2 4 2; " +
                 "-fx-stroke-dash-offset: 6; " +
                 "-fx-stroke-line-cap: butt; " +
-                "-fx-fill: rgba(255, 228, 118, .5);"
+                "-fx-fill: rgba(135,206,250, .5);"/*255, 228, 118*/
         );
 
-        /*boundary.setX(bounds.getMinX());
-        boundary.setY(bounds.getMinY());
-        boundary.setWidth(bounds.getWidth());
-        boundary.setHeight(bounds.getHeight());
-        boundaryCenterX = (bounds.getMinX() + bounds.getMaxX())/2;
-        boundaryCenterY = (bounds.getMinY() + bounds.getMaxY())/2;
-        */
         boundary.setX(nodeStartX);
         boundary.setY(nodeStartY);
         boundary.setWidth(nodeWidth);
         boundary.setHeight(nodeHeight);
         boundary.setRotate(node.getRotate());
-        //boundaryCenterX = centerXNode;
-        //boundaryCenterY = centerYNode;
-        //System.out.println("bounds.getMinX() : " + bounds.getMinX() + " bounds.getMinY() : " + bounds.getMinY() + "bounds.getWidth() : " + bounds.getWidth() + " bounds.getHeight() : " + bounds.getHeight());
         
         Util.makeDraggable(boundary, (oldX, oldY, newX, newY) -> {
             updateAnchorPositions();
@@ -213,6 +211,12 @@ public class MovementControl extends Group{
             Rectangle rectangle = (Rectangle) targetNode;
             rectangle.setX(newX);
             rectangle.setY(newY);
+        } else if (targetNode instanceof Line) {
+			Line line = (Line)targetNode;
+			line.setStartX(boundary.getX());
+			line.setStartY(boundary.getY());
+			line.setEndX(boundary.getX() + boundary.getWidth());
+			line.setEndY(boundary.getY() + boundary.getHeight());
         }
     }
 
@@ -229,7 +233,13 @@ public class MovementControl extends Group{
             rectangle.setHeight(boundary.getHeight());
             //rectangle.setRotate(angle);
             relocateTargetNode(boundary.getX(), boundary.getY());
-        }
+        } else if (targetNode instanceof Line) {
+			Line line = (Line)targetNode;
+			line.setEndX(boundary.getX() + boundary.getWidth());
+			line.setEndY(boundary.getY() + boundary.getHeight());
+			relocateTargetNode(boundary.getX(), boundary.getY());
+			
+		}
     }
 
     private void attachAnchors() {
@@ -281,46 +291,39 @@ public class MovementControl extends Group{
 }
 
     private void updateAnchorPositions() {
-    	double angle = 0;
-		//rotateAnchors(angle);
-    	//if (targetNode instanceof Rectangle) {
-		angle = targetNode.getRotate();	
-		//} /*else {*/
-	    	/*Rotate rotate = new Rotate(); 
-	        //Setting the angle for the rotation 
-	        rotate.setAngle(angle); 
-	        //Setting pivot points for the rotation 
-	        rotate.setPivotX(boundary.getX() + boundary.getWidth() / 2); 
-	        rotate.setPivotY(boundary.getY() + boundary.getHeight() / 2); */
+    	if (tableviewParent != null) {
+    		tableviewParent.getChildren().clear();
+    		tableviewParent.getChildren().addAll(Util.getNodeProperties(targetNode));
+		}
+    	double angle = targetNode.getRotate();	
 	        
 	    	rotateAnchor.setCenterX(boundary.getX() + boundary.getWidth() / 2);
 	    	rotateAnchor.setCenterY(boundary.getY()-boundary.getHeight()/6);
-	        //rotateAnchor.getTransforms().addAll(rotate); 
-	    	//rotateAnchor.setR;;
+
 	        topLeft.setCenterX(boundary.getX());
 	        topLeft.setCenterY(boundary.getY());
-	        //topLeft.getTransforms().addAll(rotate); 
+	        
 	        topCenter.setCenterX(boundary.getX() + boundary.getWidth() / 2);
 	        topCenter.setCenterY(boundary.getY());
-	        //topCenter.getTransforms().addAll(rotate); 
+	        
 	        topRight.setCenterX(boundary.getX() + boundary.getWidth());
 	        topRight.setCenterY(boundary.getY());
-	        //topRight.getTransforms().addAll(rotate); 
+	         
 	        rightCenter.setCenterX(boundary.getX() + boundary.getWidth());
 	        rightCenter.setCenterY(boundary.getY() + boundary.getHeight() / 2);
-	       // rightCenter.getTransforms().addAll(rotate); 
+	       
 	        bottomRight.setCenterX(boundary.getX() + boundary.getWidth());
 	        bottomRight.setCenterY(boundary.getY() + boundary.getHeight());
-	       // bottomRight.getTransforms().addAll(rotate); 
+	        
 	        bottomCenter.setCenterX(boundary.getX() + boundary.getWidth() / 2);
 	        bottomCenter.setCenterY(boundary.getY() + boundary.getHeight());
-	        //bottomCenter.getTransforms().addAll(rotate); 
-	       bottomLeft.setCenterX(boundary.getX());
+	         
+	        bottomLeft.setCenterX(boundary.getX());
 	        bottomLeft.setCenterY(boundary.getY() + boundary.getHeight());
-	        //bottomLeft.getTransforms().addAll(rotate); 
+	         
 	        leftCenter.setCenterX(boundary.getX());
 	        leftCenter.setCenterY(boundary.getY() + boundary.getHeight() / 2);
-	        //leftCenter.getTransforms().addAll(rotate); 
+	         
 			rotateAnchors(angle);
 		//}
     }
@@ -353,6 +356,10 @@ public class MovementControl extends Group{
         } else if (targetNode instanceof Rectangle) {
             Rectangle rectangle = (Rectangle) targetNode;;
             rectangle.setRotate(angle);
+            //relocateTargetNode(boundary.getX(), boundary.getY());
+        } else if (targetNode instanceof Line) {
+        	Line line = (Line) targetNode;;
+        	line.setRotate(angle);
             //relocateTargetNode(boundary.getX(), boundary.getY());
         }
     }
