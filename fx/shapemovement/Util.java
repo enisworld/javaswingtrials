@@ -1,7 +1,17 @@
 package shapemovement;
 
+import java.text.DecimalFormat;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 public class Util {
@@ -135,5 +145,78 @@ public class Util {
     private static class Delta {
         double x, y;
     }
-
+    
+    public static TableView<CustomNode> getNodeProperties(Node node) {
+    	TableView<CustomNode> table = new TableView<>();
+    	//node.getProperties();
+    	
+    	table.setEditable(true);
+    	TableColumn<CustomNode, String> firstNameCol = new TableColumn<>("Property");
+    	firstNameCol.setCellValueFactory(
+                new PropertyValueFactory<CustomNode, String>("property"));
+    	/*firstNameCol.setOnEditCommit(event -> {
+    	    CustomNode row = event.getRowValue();
+    	    row.setValue(event.getNewValue());
+    	});
+    	*/
+        TableColumn<CustomNode, String> lastNameCol = new TableColumn<>("Value");
+        lastNameCol.setCellValueFactory(
+                new PropertyValueFactory<CustomNode, String>("value"));
+        ObservableList<CustomNode> data = getProp(node);
+        
+        
+        table.setItems(data);
+        table.getColumns().addAll(firstNameCol, lastNameCol);
+    	//table.set
+    	return table;
+    }
+    static String roundTwoDecimals(double d)
+    {
+        DecimalFormat twoDForm = new DecimalFormat("#,####");
+        return Double.toString(Double.valueOf(twoDForm.format(d)));
+    }
+    private static ObservableList<CustomNode> getProp(Node node){
+    	double angle = 0;
+    	String startX = "", startY= "",centerX = "", centerY= "", width= "", height= "", radiusX= "", radiusY= "";
+    	ObservableList<CustomNode> data = FXCollections.observableArrayList();
+    	
+    	
+    	if (node instanceof Ellipse) {
+			Ellipse ellipse = (Ellipse) node;
+			angle = ellipse.getRotate();
+			centerX = roundTwoDecimals(ellipse.getCenterX());
+			centerY = roundTwoDecimals(ellipse.getCenterY());
+			radiusX = roundTwoDecimals(ellipse.getRadiusX());
+			radiusY = roundTwoDecimals(ellipse.getRadiusY());
+			data = FXCollections.observableArrayList(
+	    			new CustomNode("Center X", centerX)
+	    			,new CustomNode("Center Y", centerY)
+	    			,new CustomNode("Angle", roundTwoDecimals(angle))
+	    			,new CustomNode("Radius X", radiusX)
+	    			,new CustomNode("Radius Y", radiusY));
+		}
+    	if (node instanceof Rectangle) {
+    		Rectangle rectangle = (Rectangle) node;
+			angle = rectangle.getRotate();
+			startX = roundTwoDecimals(rectangle.getX());
+			startY = roundTwoDecimals(rectangle.getY());
+			width = roundTwoDecimals(rectangle.getWidth());
+			height = roundTwoDecimals(rectangle.getHeight());
+			data = FXCollections.observableArrayList(
+	    			new CustomNode("Start X", startX)
+	    			,new CustomNode("Start Y", startY)
+	    			,new CustomNode("Angle", roundTwoDecimals(angle))
+	    			,new CustomNode("Width", width)
+	    			,new CustomNode("Height", height));
+    		
+		}
+    	if (node instanceof Line) {
+    		Line line = (Line) node;
+		}
+    			
+    			
+    	return data;
+    }
+    
+    
 }
