@@ -1,0 +1,75 @@
+package painter3d;
+
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import shapemovement.Anchor;
+import shapemovement.utils.Util;
+
+public class ControlBox extends Group{
+	private final Rectangle boundary = new Rectangle();
+	private Group targetGroup;
+	private Anchor topLeft = new Anchor(Color.GHOSTWHITE, true, true, (oldX, oldY, newX, newY) -> {
+		
+	}, null);
+	
+	
+	
+	public ControlBox(double x, double y, double width, double height) {
+		DrawableObject drawableObject = (DrawableObject)this.getParent();
+		if (drawableObject != null) {
+			System.out.println("drawableObject is not null");
+			targetGroup = drawableObject.getGroupImage();
+		}
+		attachBound(x, y, width, height);		
+		attachAnchors();
+		boundary.toBack();
+	}
+	private void attachBound(double x, double y, double width, double height) {
+		boundary.setStyle(
+                "-fx-stroke: black; " +
+                "-fx-stroke-width: 2px; " +
+                "-fx-stroke-dash-array: 12 2 4 2; " +
+                "-fx-stroke-dash-offset: 6; " +
+                "-fx-stroke-line-cap: butt; " +
+                "-fx-fill: rgba(135,206,250, .5);"/*255, 228, 118*/
+        );
+		boundary.setX(x);
+		boundary.setY(y);
+		boundary.setWidth(width);
+		boundary.setHeight(height);	
+		//attachBound();
+		Util.makeDraggable(boundary, (oldX, oldY, newX, newY) -> {
+			updateAnchors();
+			relocateTargetNode(newX, newY);
+		});
+		
+		
+		getChildren().add(boundary);
+	}
+	private void attachAnchors() {
+		getChildren().addAll(
+                topLeft
+                );
+	}
+	private void updateAnchors() {
+		topLeft.setCenterX(boundary.getX());
+        topLeft.setCenterY(boundary.getY());
+	}
+	private void relocateTargetNode(double newX, double newY) {
+		if (targetGroup!= null) {
+			for (Node node : targetGroup.getChildren()) {
+				if (node instanceof Rectangle) {
+					Rectangle rect = (Rectangle) node;
+					rect.setX(newX);
+					rect.setY(newY);
+					System.out.println("inside : " + newX + " : " + newY);
+					//drawableObject.getGroupImage().getChildren().add(rect);
+				}
+			} 
+		}
+		boundary.setX(newX);
+		boundary.setY(newY);
+	}
+}
