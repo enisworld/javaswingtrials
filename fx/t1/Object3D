@@ -1,0 +1,63 @@
+package painter3d;
+
+public class Object3D {
+	private double x, y, z, width, height, depth, angle;
+	
+	public Object3D() {
+	}
+	public Object3D(double x, double y, double z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+	
+	//Getters and Setters
+	public double getX() {
+		return x;
+	}
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public double getY() {
+		return y;
+	}
+	public void setY(double y) {
+		this.y = y;
+	}
+
+	public double getZ() {
+		return z;
+	}
+	public void setZ(double z) {
+		this.z = z;
+	}
+
+	public double getWidth() {
+		return width;
+	}
+	public void setWidth(double width) {
+		this.width = width;
+	}
+
+	public double getHeight() {
+		return height;
+	}
+	public void setHeight(double height) {
+		this.height = height;
+	}
+
+	public double getAngle() {
+		return angle;
+	}
+	public void setAngle(double angle) {
+		this.angle = angle;
+	}
+
+	public double getDepth() {
+		return depth;
+	}
+	public void setDepth(double depth) {
+		this.depth = depth;
+	}
+}
