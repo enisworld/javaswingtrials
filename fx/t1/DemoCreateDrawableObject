@@ -1,0 +1,75 @@
+package painter3d;
+
+import javafx.application.Application;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import shapemovement.MovementControl;
+
+public class DemoCreateDrawableObject extends Application{
+	private Node selectedNode;
+	public static void main(String[] args) {
+		launch(args);
+
+	}
+
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		Pane pane = new Pane();
+		
+		Object3D obj3d = new Object3D(50, 60, 70);
+		obj3d.setDepth(40);
+		obj3d.setWidth(80);
+		obj3d.setHeight(70);
+		
+		//DrawableObject dobj = new DrawableObject(obj3d,"Side");
+		//DrawableObject dobj2 = new DrawableObject(obj3d,"Top");
+		DrawableObject dobj3 = new DrawableObject(obj3d,"Front");
+		
+		pane.getChildren().addAll(/*dobj,dobj2, */dobj3);
+		pane.setOnMouseClicked(event ->{
+			final Parent parentNode = ((Node) event.getTarget()).getParent();
+            System.out.println("pane clicked. "+ event.getSource());
+            if (selectedNode != null && !(parentNode instanceof DrawableObject)) {
+            	((DrawableObject)selectedNode).getControlBox().setVisible(false);
+            	//pane.getChildren().removeIf(candidate -> candidate instanceof DrawableObject);
+            	selectedNode = null;
+            }
+		});
+		makeSelectable(pane);
+		
+		Scene scene = new Scene(pane, 500,500);
+		
+		primaryStage.setScene(scene);
+		primaryStage.show();
+		
+		
+	}
+	
+	private void makeSelectable(Pane pane) {
+		ObservableList<Node> observableList = pane.getChildren();
+		for (Node node : observableList) {
+			node.setOnMouseClicked(event -> {
+				if (selectedNode != node) {
+					
+                    //pane.getChildren().removeIf(candidate -> candidate instanceof DrawableObject);
+                    selectedNode = node;
+                    ((DrawableObject)node).getControlBox().setVisible(true);
+                    System.out.println("node clicked" + selectedNode);
+                    node.toFront();
+                    /*DrawableObject drawableObject = new DrawableObject(((DrawableObject)node).getObj3d(), "Front");
+                    pane.getChildren().add(drawableObject);   */                 
+                }
+                event.consume();
+			});
+		}
+		
+	}
+	
+	
+	
+
+}
